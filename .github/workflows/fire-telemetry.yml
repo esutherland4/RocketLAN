@@ -1,0 +1,44 @@
+name: "RocketLAN: Fire Telemetry to Mission Control"
+
+on:
+  workflow_dispatch:
+    inputs:
+      account_id:
+        description: "New Relic Account ID"
+        required: true
+        type: string
+      region:
+        description: "New Relic region"
+        required: true
+        type: choice
+        options:
+          - US
+          - EU
+        default: US
+      datapoints:
+        description: "Number of metric datapoints to generate (default: 20)"
+        required: false
+        type: string
+        default: "20"
+
+jobs:
+  fire-telemetry:
+    name: Transmit to Mission Control
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Fire telemetry
+        env:
+          NR_LICENSE_KEY: ${{ secrets.NR_LICENSE_KEY }}
+          NR_ACCOUNT_ID:  ${{ inputs.account_id }}
+          NR_REGION:      ${{ inputs.region }}
+          NR_DATAPOINTS:  ${{ inputs.datapoints }}
+        run: python3 nr_fake_telemetry.py
