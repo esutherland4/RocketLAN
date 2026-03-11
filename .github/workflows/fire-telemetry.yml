@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Mask license key in logs
+        run: echo "::add-mask::${{ inputs.license_key }}"
+
       - name: Checkout
         uses: actions/checkout@v4
 
