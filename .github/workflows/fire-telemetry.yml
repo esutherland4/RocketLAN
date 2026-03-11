@@ -7,6 +7,10 @@ on:
         description: "New Relic Account ID"
         required: true
         type: string
+      license_key:
+        description: "New Relic Ingest License Key"
+        required: true
+        type: string
       region:
         description: "New Relic region"
         required: true
@@ -37,7 +41,7 @@ jobs:
 
       - name: Fire telemetry
         env:
-          NR_LICENSE_KEY: ${{ secrets.NR_LICENSE_KEY }}
+          NR_LICENSE_KEY: ${{ inputs.license_key }}
           NR_ACCOUNT_ID:  ${{ inputs.account_id }}
           NR_REGION:      ${{ inputs.region }}
           NR_DATAPOINTS:  ${{ inputs.datapoints }}
