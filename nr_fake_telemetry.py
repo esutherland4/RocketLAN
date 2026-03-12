@@ -118,7 +118,15 @@ def send_metrics(n):
             },
         ]
 
-    payload = [{"metrics": metrics}]
+    payload = [{
+        "common": {
+            "attributes": {
+                "service.name": APP_NAME,
+                "instrumentation.provider": "rocketlan-mission-control",
+            },
+        },
+        "metrics": metrics,
+    }]
     status, body = post_json(METRIC_ENDPOINT, payload)
     print(f"  Metrics  → HTTP {status} ({n} datapoints × 4 metrics = {n * 4} series points)")
     if status >= 400:
@@ -140,6 +148,8 @@ def send_events():
             "eventType": "Pre_Flight_Check_Initiated",
             "timestamp": t0,
             "app": APP_NAME,
+            "entity.name": APP_NAME,
+            "entity.type": "SERVICE",
             "gateway_status": "checking",
             "thrusters": "online",
             "coffee_level": "critical",
@@ -149,6 +159,8 @@ def send_events():
             "eventType": "Zero_Hour_Execution",
             "timestamp": t0 + 2,
             "app": APP_NAME,
+            "entity.name": APP_NAME,
+            "entity.type": "SERVICE",
             "cron_status": "success",
             "user_awake": False,
         },
@@ -157,6 +169,8 @@ def send_events():
             "eventType": "Hostile_Environment_Detected",
             "timestamp": t0 + (5 * 60),
             "app": APP_NAME,
+            "entity.name": APP_NAME,
+            "entity.type": "SERVICE",
             "network_name": "Hotel_Guest",
             "environment": "Mars",
             "download_speed_mbps": round(random.uniform(0.05, 0.9), 3),
@@ -167,6 +181,8 @@ def send_events():
             "eventType": "Touchdown_Brings_Me_Round",
             "timestamp": t0 + (12 * 60),
             "app": APP_NAME,
+            "entity.name": APP_NAME,
+            "entity.type": "SERVICE",
             "connection_type": "ethernet",
             "relief_level": "high",
             "orbital_latency_ms": round(random.uniform(8.0, 22.0), 2),
@@ -211,7 +227,15 @@ def send_logs():
         for ts, level, component, message in log_sequence
     ]
 
-    payload = [{"logs": logs}]
+    payload = [{
+        "common": {
+            "attributes": {
+                "service.name": APP_NAME,
+                "entity.name": APP_NAME,
+            },
+        },
+        "logs": logs,
+    }]
     status, body = post_json(LOG_ENDPOINT, payload)
     print(f"  Logs     → HTTP {status} ({len(logs)} log lines)")
     if status >= 400:
